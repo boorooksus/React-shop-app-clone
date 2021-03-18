@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { Typography, Button, Form, Input } from 'antd';
 import FileUpload from '../../utils/FileUpload';
+import Axios from 'axios';
 
 // antd 웹프레임워크
 const { TextArea } = Input;
@@ -16,7 +17,7 @@ const Continents = [
     { key: 7, value: "Antarctica" }
 ]
 
-function UploadProductPage() {
+function UploadProductPage(props) {
 
     const [Title, setTitle] = useState("")
     const [Description, setDescription] = useState("")
@@ -40,8 +41,44 @@ function UploadProductPage() {
         setContinent(event.currentTarget.value)
     }
 
+    // 자식 컴포넌트에서 업로드된 이미지를 패러미터로 받음
     const updateImages = (newImages) => {
         setImages(newImages)
+    }
+
+    const submitHandler = (event) => {
+        // 새로고침 방지
+        event.preventDefault();
+        // 빈 항목이 없도록!
+        if (!Title || !Description || !Price || !Continent || Images.length === 0) {
+            return alert(" 모든 값을 넣어주셔야 합니다.")
+        }
+
+
+        //서버에 채운 값들을 request로 보낸다.
+
+        const body = {
+            //로그인 된 사람의 ID - 두 가지 방법 있음
+            // 1. redux에 저장된 id 가져오기
+            // 2. hoc/auth에 넣어둔 user의 모든 정보들 props 이용해서가져오기
+            // 여기서는 2번 방식
+            writer: props.user.userData._id,
+            title: Title,
+            description: Description,
+            price: Price,
+            images: Images,
+            continents: Continent
+        }
+
+        Axios.post('/api/product', body)
+            .then(response => {
+                if (response.data.success) {
+                    alert('상품 업로드에 성공 했습니다.')
+                    props.history.push('/')
+                } else {
+                    alert('상품 업로드에 실패 했습니다.')
+                }
+            })
     }
 
 
@@ -53,8 +90,10 @@ function UploadProductPage() {
 
             <Form >
                 {/* DropZone */}
+                {/* refreshFunction으로 프롭 전달 */}
                 {/* 맨 뒤에 '/>'랑 띄어쓰기 안했다가 오류남. 오타 주의!! */}
                 <FileUpload refreshFunction={updateImages} />
+
                 <br />
                 <br />
                 <label>이름</label>
@@ -77,10 +116,11 @@ function UploadProductPage() {
                 </select>
                 <br />
                 <br />
-                <Button type="submit">
+                <Button type="submit" onClick={ submitHandler }>
                     확인
                 </Button>
             </Form>
+            
 
 
         </div>

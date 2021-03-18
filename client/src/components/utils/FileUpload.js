@@ -27,15 +27,30 @@ function FileUpload(props) {
                     // (안그러면 새로운 데이터만 들어가고 기존에 올렸던 이미지 데이터 없어짐)
                     // 그리고 새로운 데이터 filePath 넣어서 배열에 데이터 추가시킴.
                     setImages([...Images, response.data.filePath])
-                    props.refreshFunction([...Images, response.data.filePath])
                     
                     console.log('imgs: ', Images)
+
+                    props.refreshFunction([...Images, response.data.filePath])
 
                 } else {
                     console.log('res: ', response.data)
                     alert('파일을 저장하는데 실패했습니다.')
                 }
             })
+    }
+
+    const deleteHandler = (image) => {
+        // 클릭한 이미지의 인덱스
+        const currentIndex = Images.indexOf(image);
+        // 현재 state에 있는 이미지들 배열 복사
+        let newImages = [...Images]
+        // 배열에서 인덱스 currentIndex에서 부터 1개의 이미지를 지운다.
+        newImages.splice(currentIndex, 1)
+        setImages(newImages)
+        // 바뀐 정보를 부모 컴포넌트(UploadProductPage.js)에 올려줘야함.
+        props.refreshFunction(newImages)
+
+
     }
 
     return (
@@ -60,7 +75,8 @@ function FileUpload(props) {
             <div style={{ display: 'flex', width: '350px', height: '240px', overflowX: 'scroll' }}>
 
             {Images.map((image, index) => (
-                    <div key={index}>
+                    // 이미지 클릭했을 때 삭제
+                    <div onClick={() => deleteHandler(image)} key={index}>
                         <img style={{ minWidth: '300px', width: '300px', height: '240px' }}
                             src={`http://localhost:5000/${image}`}
                         />
