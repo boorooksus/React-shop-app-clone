@@ -8,9 +8,18 @@ function LandingPage() {
 
     // 상품 정보들을 state에 담아서 활용
     const [Products, setProducts] = useState([])
+        // 몽고db의 skip과 limit을 위한 state
+        const [Skip, setSkip] = useState(0)
+        const [Limit, setLimit] = useState(8)  // 처음 메인 화면에 상품 8개 가져옴
 
     useEffect(() => {
-        axios.post('/api/product/products')
+        // 상품 개수 몇개 가저올지 조절
+        let body = {
+            skip: Skip,
+            limit: Limit
+        }
+
+        axios.post('/api/product/products', body)
             .then(response => {
                 if (response.data.success){
                     setProducts(response.data.productInfo)
@@ -19,6 +28,18 @@ function LandingPage() {
                 }
             })
     }, [])
+
+    const loadMoreHanlder = () => {
+
+        let skip = Skip + Limit
+        let body = {
+            skip: skip,
+            limit: Limit,
+            loadMore: true,
+        }
+
+        setSkip(skip)
+    }
 
     // 상품 정보들 카드에 mapping
     const renderCards = Products.map((product, index) => {
@@ -59,7 +80,7 @@ function LandingPage() {
 
   
             <div style={{ display: 'flex', justifyContent: 'center' }}>
-                <button>더보기</button>
+                <button onClick={loadMoreHanlder}>더보기</button>
             </div>
 
 
