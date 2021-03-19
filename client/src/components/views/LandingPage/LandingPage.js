@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import axios from "axios";
 import {  Col, Card, Row } from 'antd';
 import Meta from 'antd/lib/card/Meta';
+import ImageSlider from '../../utils/ImageSlider';
 
 function LandingPage() {
 
@@ -25,7 +26,7 @@ function LandingPage() {
         // => 한줄에 이미지 4개 -> 이미지 사이즈: 6, 3개 -> 8, 1개 -> 24
         return <Col lg={6} md={8} xs={24} key={index}>
             <Card
-                cover={<img src={`http://localhost:5000/${product.images[0]}`} />}
+                cover={<ImageSlider images={product.images} />}
             >
                 <Meta
                     title={product.title}
