@@ -3,6 +3,8 @@ import axios from "axios";
 import {  Col, Card, Row } from 'antd';
 import Meta from 'antd/lib/card/Meta';
 import ImageSlider from '../../utils/ImageSlider';
+import Checkbox from './Sections/CheckBox';
+import { continents } from './Sections/Datas';
 
 function LandingPage() {
 
@@ -81,6 +83,15 @@ function LandingPage() {
             <div style={{ textAlign: 'center' }}>
                 <h2>Let's Travel Anywhere  </h2>
             </div>
+
+            {/* Filter */}
+
+            <Row gutter={[16, 16]}>
+                <Col lg={12} xs={24}>
+                    {/* CheckBox */}
+                    <Checkbox list={continents} />
+                </Col>
+            </Row>
 
 
             {/* Search */}
