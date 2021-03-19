@@ -8,9 +8,10 @@ function LandingPage() {
 
     // 상품 정보들을 state에 담아서 활용
     const [Products, setProducts] = useState([])
-        // 몽고db의 skip과 limit을 위한 state
-        const [Skip, setSkip] = useState(0)
-        const [Limit, setLimit] = useState(8)  // 처음 메인 화면에 상품 8개 가져옴
+    // 몽고db의 skip과 limit을 위한 state
+    const [Skip, setSkip] = useState(0)
+    const [Limit, setLimit] = useState(4)  // 처음 메인 화면에 상품 8개 가져옴
+    const [PostSize, setPostSize] = useState(0)
 
     useEffect(() => {
         // 상품 개수 몇개 가저올지 조절
@@ -19,25 +20,41 @@ function LandingPage() {
             limit: Limit
         }
 
+        getProducts(body)
+
+    }, [])
+
+    const getProducts = (body) => {
         axios.post('/api/product/products', body)
             .then(response => {
-                if (response.data.success){
-                    setProducts(response.data.productInfo)
-                } else{
-                    alert("상품들을 가져오는데 실패")
+                if (response.data.success) {
+                    if (body.loadMore) {
+                        // 더보기 버튼을 누른 경우
+                        // 원래 product 가져오고 그 이후의 정보들 추가하는 방식
+                        // (이렇게 안하면 추가로 가져온 상품들만 나타남)
+                        setProducts([...Products, ...response.data.productInfo])
+                    } else {
+                        setProducts(response.data.productInfo)
+                    }
+                    setPostSize(response.data.postSize)
+                } else {
+                    alert(" 상품들을 가져오는데 실패 했습니다.")
                 }
             })
-    }, [])
+    }
 
     const loadMoreHanlder = () => {
 
         let skip = Skip + Limit
+
         let body = {
             skip: skip,
             limit: Limit,
-            loadMore: true,
+            loadMore: true  // 더보기 버튼으로 가져온 정보인지 여부
         }
 
+        getProducts(body)
+        // 위에서 수정한 skip 업데이트
         setSkip(skip)
     }
 
@@ -78,10 +95,13 @@ function LandingPage() {
 
             <br />
 
-  
-            <div style={{ display: 'flex', justifyContent: 'center' }}>
-                <button onClick={loadMoreHanlder}>더보기</button>
-            </div>
+            {/* 더 가져올 상품 없을 땐 더보기 버튼 숨기기 */}
+            {/* 백엔드에서 가져온 상품개수가 8개 이상이면 더 가져올 정보 있다는 뜻 */}
+            {PostSize >= Limit &&
+                <div style={{ display: 'flex', justifyContent: 'center' }}>
+                    <button onClick={loadMoreHanlder}>더보기</button>
+                </div>
+            }
 
 
         </div>

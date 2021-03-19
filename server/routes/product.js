@@ -61,7 +61,8 @@ router.post('/products', (req, res) =>{
         .exec((err, productInfo) => {
             if (err) return res.status(400).json({ success: false, err })
             return res.status(200).json({
-                success: true, productInfo
+                success: true, productInfo,
+                postSize: productInfo.length
             })
         })
 })
