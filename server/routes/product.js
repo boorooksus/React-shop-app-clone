@@ -53,6 +53,7 @@ router.post('/products', (req, res) =>{
     // limit 존재한다면 req.body.limit으로, 없다면 20으로
     let limit = req.body.limit ? parseInt(req.body.limit) : 20;
     let skip = req.body.skip ? parseInt(req.body.skip) : 0;
+    let term = req.body.searchTerm
 
     let findArgs = {};
 
@@ -76,17 +77,35 @@ router.post('/products', (req, res) =>{
         }
     }
 
-    Product.find(findArgs)
-        .populate("writer")
-        .skip(skip)  // 상품 정보 인덱스 몇 부터 가져올지
-        .limit(limit)  // 상품 몇 개 가져올지
-        .exec((err, productInfo) => {
-            if (err) return res.status(400).json({ success: false, err })
-            return res.status(200).json({
-                success: true, productInfo,
-                postSize: productInfo.length
+    // 검색어가 있을 때
+    if (term) {
+            // populate: writer에 대한 모든 정보 가져올 수 있음
+            // exec: 실행
+        Product.find(findArgs)
+            .find({ $text: { $search: term } })  // 몽고db method. 공홈 참조
+            .populate("writer")
+            .skip(skip)  // 상품 정보 인덱스 몇 부터 가져올지
+            .limit(limit)  // 상품 몇 개 가져올지
+            .exec((err, productInfo) => {
+                if (err) return res.status(400).json({ success: false, err })
+                return res.status(200).json({
+                    success: true, productInfo,
+                    postSize: productInfo.length
+                })
             })
-        })
+    } else {
+        Product.find(findArgs)
+            .populate("writer")
+            .skip(skip)
+            .limit(limit)
+            .exec((err, productInfo) => {
+                if (err) return res.status(400).json({ success: false, err })
+                return res.status(200).json({
+                    success: true, productInfo,
+                    postSize: productInfo.length
+                })
+            })
+    }
 })
 
 module.exports = router;
