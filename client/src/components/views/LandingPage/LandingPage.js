@@ -97,6 +97,20 @@ function LandingPage() {
 
     }
 
+    const handlePrice = (value) => {
+        // Datas.js에 들어있는 가격 옵션 목록
+        const data = price;
+        let array = [];
+
+        for (let key in data) {
+            if (data[key]._id === parseInt(value, 10)) {
+                // 최소가격, 최대 가격 저장된 배열 받아서 저장
+                array = data[key].array;
+            }
+        }
+        return array;
+    }
+
     // category: 적용할 필터가 대륙 or Price인지
     // filter: 체크된 값들이 담긴 array
     const handleFilters = (filters, category) => {
@@ -106,6 +120,11 @@ function LandingPage() {
         newFilters[category] = filters
 
         console.log('filters', filters)
+
+        if (category === "price") {
+            let priceValues = handlePrice(filters)
+            newFilters[category] = priceValues
+        }
 
         showFilteredResults(newFilters)
         setFilters(newFilters)

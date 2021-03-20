@@ -62,7 +62,16 @@ router.post('/products', (req, res) =>{
 
             console.log('key: ', key)
 
-            findArgs[key] = req.body.filters[key];
+            if (key === "price") {
+                findArgs[key] = {
+                    // gte: Greater than equal. mongodb method
+                    $gte: req.body.filters[key][0],
+                    // lte: Less than equal
+                    $lte: req.body.filters[key][1]
+                }
+            } else {
+                findArgs[key] = req.body.filters[key];
+            }
 
         }
     }
