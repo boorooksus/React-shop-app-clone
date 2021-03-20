@@ -4,7 +4,8 @@ import {  Col, Card, Row } from 'antd';
 import Meta from 'antd/lib/card/Meta';
 import ImageSlider from '../../utils/ImageSlider';
 import Checkbox from './Sections/CheckBox';
-import { continents } from './Sections/Datas';
+import Radiobox from './Sections/RadioBox';
+import { continents, price } from './Sections/Datas';
 
 function LandingPage() {
 
@@ -120,9 +121,17 @@ function LandingPage() {
             {/* Filter */}
 
             <Row gutter={[16, 16]}>
+                {/* 체크박스 사이즈 12(lg)와 라디오 12 합치면 24(xs) */}
                 <Col lg={12} xs={24}>
                     {/* CheckBox */}
+                    {/* Checkbox에 props로 list와 handleFilters를 보냄 */}
+                    {/* handleFilters는 CheckBox에서 모든 일 처리한 후, 부모 state인 
+                    Filters(위에 선언된 useState)로 전달하기 위해서 props로 전달 */}
                     <Checkbox list={continents} handleFilters={filters => handleFilters(filters, "continents")} />
+                </Col>
+                <Col lg={12} xs={24}>
+                    {/* RadioBox */}
+                    <Radiobox list={price} handleFilters={filters => handleFilters(filters, "price")} />
                 </Col>
             </Row>
 
