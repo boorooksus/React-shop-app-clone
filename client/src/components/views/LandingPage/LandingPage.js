@@ -77,6 +77,10 @@ function LandingPage() {
         </Col>
     })
 
+    const handleFilters = (filters, category) => {
+
+    }
+
     return (
         <div style={{ width: '75%', margin: '3rem auto' }}>
 
