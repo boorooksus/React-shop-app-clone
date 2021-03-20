@@ -54,7 +54,20 @@ router.post('/products', (req, res) =>{
     let limit = req.body.limit ? parseInt(req.body.limit) : 20;
     let skip = req.body.skip ? parseInt(req.body.skip) : 0;
 
-    Product.find()
+    let findArgs = {};
+
+    for (let key in req.body.filters) {
+        if (req.body.filters[key].length > 0) {
+            // 필터에 적용할 값이 있는 경우
+
+            console.log('key: ', key)
+
+            findArgs[key] = req.body.filters[key];
+
+        }
+    }
+
+    Product.find(findArgs)
         .populate("writer")
         .skip(skip)  // 상품 정보 인덱스 몇 부터 가져올지
         .limit(limit)  // 상품 몇 개 가져올지

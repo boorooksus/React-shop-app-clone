@@ -14,6 +14,10 @@ function LandingPage() {
     const [Skip, setSkip] = useState(0)
     const [Limit, setLimit] = useState(4)  // 처음 메인 화면에 상품 8개 가져옴
     const [PostSize, setPostSize] = useState(0)
+    const [Filters, setFilters] = useState({
+        continents: [],
+        price: []
+    })
 
     useEffect(() => {
         // 상품 개수 몇개 가저올지 조절
@@ -77,8 +81,33 @@ function LandingPage() {
         </Col>
     })
 
+    const showFilteredResults = (filters) => {
+
+        let body = {
+            // 체크박스 누를 때마다 상품정보 처음부터 가져와야 하기 때문에
+            // skip은 0으로 지정
+            skip: 0,
+            limit: Limit,
+            filters: filters
+        }
+
+        getProducts(body)
+        setSkip(0)
+
+    }
+
+    // category: 적용할 필터가 대륙 or Price인지
+    // filter: 체크된 값들이 담긴 array
     const handleFilters = (filters, category) => {
 
+        const newFilters = { ...Filters }
+
+        newFilters[category] = filters
+
+        console.log('filters', filters)
+
+        showFilteredResults(newFilters)
+        setFilters(newFilters)
     }
 
     return (
@@ -93,7 +122,7 @@ function LandingPage() {
             <Row gutter={[16, 16]}>
                 <Col lg={12} xs={24}>
                     {/* CheckBox */}
-                    <Checkbox list={continents} />
+                    <Checkbox list={continents} handleFilters={filters => handleFilters(filters, "continents")} />
                 </Col>
             </Row>
 
