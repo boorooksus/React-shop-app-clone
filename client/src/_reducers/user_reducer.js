@@ -18,7 +18,14 @@ export default function(state={},action){
         case LOGOUT_USER:
             return {...state }
         case ADD_TO_CART:
-            return {...state }
+            return {
+                ...state,
+                userData: {
+                    ...state.userData,
+                    cart: action.payload
+                    // userData에 기존 데이터와 카트 정보들을 넣어줌.
+                }
+            }
         default:
             return state;
     }

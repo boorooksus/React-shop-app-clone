@@ -70,6 +70,57 @@ router.get("/logout", auth, (req, res) => {
 
 router.post("/addToCart", auth, (req, res) => {
 
+    //먼저  User Collection에 해당 유저의 정보를 가져오기 
+    // auth 미들웨어 통해서 req.user에 유저 정보가 들어있음
+    User.findOne({ _id: req.user._id },
+        (err, userInfo) => {
+
+            // 가져온 정보에서 카트에다 넣으려 하는 상품이 이미 들어 있는지 확인 
+
+            let duplicate = false;
+            userInfo.cart.forEach((item) => {
+                if (item.id === req.body.productId) {
+                    duplicate = true;
+                }
+            })
+
+            //상품이 이미 있을때
+            if (duplicate) {
+                // db의 많은 user들 중에서 현재 유저를 찾고
+                // 그 유저의 cart 목록 중에서 현재 상품을 찾아야함
+                // $inc: increment(하나 더한다는 뜻)
+                // 'new: true': 업데이트된 유저 정보를 받기 위해서 설정해줘야함
+                User.findOneAndUpdate(
+                    { _id: req.user._id, "cart.id": req.body.productId },
+                    { $inc: { "cart.$.quantity": 1 } },
+                    { new: true }, 
+                    (err, userInfo) => {
+                        if (err) return res.status(200).json({ success: false, err })
+                        res.status(200).send(userInfo.cart) // 모든 유저 정보가 아닌 cart 부분만 보냄
+                    }
+                )
+            }
+            //상품이 이미 있지 않을때 
+            else {
+                User.findOneAndUpdate(
+                    { _id: req.user._id },
+                    {
+                        $push: {
+                            cart: {
+                                id: req.body.productId,
+                                quantity: 1,
+                                date: Date.now()
+                            }
+                        }
+                    },
+                    { new: true },
+                    (err, userInfo) => {
+                        if (err) return res.status(400).json({ success: false, err })
+                        res.status(200).send(userInfo.cart)
+                    }
+                )
+            }
+        })
 });
 
 module.exports = router;
