@@ -73,7 +73,7 @@ function LandingPage() {
         // => 한줄에 이미지 4개 -> 이미지 사이즈: 6, 3개 -> 8, 1개 -> 24
         return <Col lg={6} md={8} xs={24} key={index}>
             <Card
-                cover={<ImageSlider images={product.images} />}
+                cover={<a href={`/product/${product._id}`} ><ImageSlider images={product.images} /></a>}
             >
                 <Meta
                     title={product.title}

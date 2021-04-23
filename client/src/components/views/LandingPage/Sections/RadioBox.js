@@ -22,6 +22,7 @@ function RadioBox(props) {
 
     return (
         <div>
+            {/* defaultActiveKey가 0이면 닫혀있는게 디폴트 */}
             <Collapse defaultActiveKey={['0']} >
                 <Panel header="Price" key="1">
 
