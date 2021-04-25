@@ -20,7 +20,7 @@ function DetailProductPage(props) {
                     alert('실패')
                 }
                 setProduct(response.data.product[0])
-                console.log('response.data[0]: ',response.data[0] )
+                console.log('response.data.product[0]: ',response.data.product[0] )
             })
             .catch(err => alert(err))
     }, [])

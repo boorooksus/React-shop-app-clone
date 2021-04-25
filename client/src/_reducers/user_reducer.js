@@ -3,7 +3,8 @@ import {
     REGISTER_USER,
     AUTH_USER,
     LOGOUT_USER,
-    ADD_TO_CART
+    ADD_TO_CART,
+    GET_CART_ITEMS
 } from '../_actions/types';
  
 
@@ -26,6 +27,8 @@ export default function(state={},action){
                     // userData에 기존 데이터와 카트 정보들을 넣어줌.
                 }
             }
+        case GET_CART_ITEMS:
+            return { ...state, cartDetail: action.payload }
         default:
             return state;
     }
