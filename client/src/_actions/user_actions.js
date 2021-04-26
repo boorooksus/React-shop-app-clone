@@ -73,9 +73,9 @@ export function getCartItems(cartItems, userCart) {
 
             // id 비교해서 같으면 quantity 정보를 넣어줌
             userCart.forEach(cartItem => {
-                response.data.product.forEach((productDetail, index) => {
+                response.data.forEach((productDetail, index) => {
                     if (cartItem.id === productDetail._id) {
-                        response.data.product[index].quantity = cartItem.quantity
+                        response.data[index].quantity = cartItem.quantity
                     }
                 })
             })

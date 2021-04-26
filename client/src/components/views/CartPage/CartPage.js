@@ -27,8 +27,7 @@ function CartPage(props) {
             <h1>My Cart</h1>
 
             <div>
-                {/* props에 cartDetail이 있는지 확인 안하면 너무 빨리 전달돼서 cartDetail이 업데이트 안돼서 에러 날 수 있음 */}
-                <UserCardBlock products={props.user.cartDetail && props.user.cartDetail.product}/>
+                <UserCardBlock products={props.user.cartDetail }/>
             </div>
         </div>
     )

@@ -14,13 +14,7 @@ function DetailProductPage(props) {
         // db에서 하나만 가져오므로 'type=single'
         axios.get(`/api/product/products_by_id?id=${productId}&type=single`)
             .then(response => {
-                if(response.data.success){
-                    console.log('response.data:', response.data)
-                } else{
-                    alert('실패')
-                }
-                setProduct(response.data.product[0])
-                console.log('response.data.product[0]: ',response.data.product[0] )
+                setProduct(response.data[0])
             })
             .catch(err => alert(err))
     }, [])
