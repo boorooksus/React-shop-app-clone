@@ -2,12 +2,14 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux';
 import { getCartItems, removeCartItem } from '../../../_actions/user_actions';
 import UserCardBlock from './Sections/UserCardBlock';
+import { Empty } from 'antd';
 
 function CartPage(props) {
 
     const dispatch = useDispatch();
 
     const [Total, setTotal] = useState(0)
+    const [ShowTotal, setShowTotal] = useState(false)
 
     useEffect(() => {
 
@@ -32,14 +34,16 @@ function CartPage(props) {
         })
 
         setTotal(total)
-
+        setShowTotal(true)
     }
 
     let removeFromCart = (productId) => {
 
         dispatch(removeCartItem(productId))
             .then(response => {
-
+                if (response.payload.productInfo.length <= 0) {
+                    setShowTotal(false)
+                }
 
             })
 
@@ -52,9 +56,19 @@ function CartPage(props) {
             <div>
                 <UserCardBlock products={props.user.cartDetail } removeItem={removeFromCart}/>
             </div>
-            <div style={{ marginTop: '3rem' }}>
-                <h2>Total Amount: ${Total}</h2>
-            </div>
+
+            {/* 삼항 연산자로 ShowTotal 값에 따라 다르게 표현 */}
+            {ShowTotal ?
+                <div style={{ marginTop: '3rem' }}>
+                    <h2>Total Amount: ${Total}</h2>
+                </div>
+                :
+                // 리액트는 JSX를 사용하기에 항상 렌더링부분을 감싸줘야함. "<ReactFragment></ReactFragment> (<div></div> 같은거)"를 간단하게 하면 이렇게 사용 가능
+                <>
+                <br />
+                <Empty description={false} />
+                </>
+            }
         </div>
     )
 }
