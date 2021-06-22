@@ -33,6 +33,9 @@ function RightMenu(props) {
   } else {
     return (
       <Menu mode={props.mode}>
+        <Menu.Item key="history">
+          <a href="/history">History</a>
+        </Menu.Item>
         <Menu.Item key="upload">
           <a href="/product/upload">Upload</a>
         </Menu.Item>
@@ -42,9 +45,7 @@ function RightMenu(props) {
         </Menu.Item>
 
         <Menu.Item key="cart" style={{ paddingTop: 10 }}>
-          {/* 일단은 뱃지의 숫자를 5로 설정. 
-          나중에 수정 예정... */}
-          <Badge count={5}>
+          <Badge count={user.userData && user.userData.cart.length}>
             <a href="/user/cart" className="head-example" style={{ marginRight: -2, color: '#667777' }} >
               Cart
               {/* <Icon type="shopping-cart" style={{ fontSize: 30, marginBottom: 3 }} /> */}
