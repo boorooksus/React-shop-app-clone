@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux';
 import { getCartItems, removeCartItem, onSuccessBuy } from '../../../_actions/user_actions';
 import UserCardBlock from './Sections/UserCardBlock';
-import { Empty } from 'antd';
+import { Empty, Result } from 'antd';
 import Paypal from '../../utils/Paypal';
 
 function CartPage(props) {
@@ -11,6 +11,7 @@ function CartPage(props) {
 
     const [Total, setTotal] = useState(0)
     const [ShowTotal, setShowTotal] = useState(false)
+    const [ShowSuccess, setShowSuccess] = useState(false)
 
     useEffect(() => {
 
@@ -57,8 +58,8 @@ function CartPage(props) {
         }))
             .then(response => {
                 if (response.payload.success) {
-                    // setShowTotal(false)
-                    // setShowSuccess(true)
+                    setShowTotal(false)
+                    setShowSuccess(true)
                 }
             })
     }
@@ -76,6 +77,11 @@ function CartPage(props) {
                 <div style={{ marginTop: '3rem' }}>
                     <h2>Total Amount: ${Total}</h2>
                 </div>
+                : ShowSuccess ?
+                <Result
+                    status="success"
+                    title="Successfully Purchased Items"
+                />
                 :
                 // 리액트는 JSX를 사용하기에 항상 렌더링부분을 감싸줘야함. "<ReactFragment></ReactFragment> (<div></div> 같은거)"를 간단하게 하면 이렇게 사용 가능
                 <>
@@ -88,6 +94,7 @@ function CartPage(props) {
             {ShowTotal &&
                 <Paypal
                     total={Total}
+                    onSuccess={transactionSuccess}
                 />
             }
 
